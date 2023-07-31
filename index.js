@@ -12,7 +12,7 @@ import bcrypt from "bcrypt";
 import passport from "passport";
 import session from "express-session";
 
-import initializePassport from "./passport-config";
+import initializePassport from "./passport-config.js";
 
 
 initializePassport(
@@ -108,7 +108,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(session({
-  secret: secret,
+  secret: "yes",
   resave: false,
   saveUninitialized: false
 }))
@@ -164,29 +164,33 @@ app.post("/register", upload.single('petImage'), async (req, res) => {
 });
 
 // Handle Login
-let username = "";
-app.post("/login", async function (req, res) {
-  const message = "Wrong username or password, please try again.";
-  try {
-    // check if the user exists
-    const user = await Profiles.findOne({ username: req.body.username });
-    if (user) {
-      //check if password matches
-      const result = req.body.password === user.password;
-      if (result) {
-        username = req.body.username;
-        res.redirect("/app");
-      } else {
-        res.render("login", { message });
-      }
-    } else {
-      res.render("login", { message });
-    }
-  } catch (error) {
-    console.log("oh no");
-    console.error(error);
-  }
-});
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/app',
+  failureRedirect: '/',
+}))
+// let username = "";
+// app.post("/login", async function (req, res) {
+//   const message = "Wrong username or password, please try again.";
+//   try {
+//     // check if the user exists
+//     const user = await Profiles.findOne({ username: req.body.username });
+//     if (user) {
+//       //check if password matches
+//       const result = req.body.password === user.password;
+//       if (result) {
+//         username = req.body.username;
+//         res.redirect("/app");
+//       } else {
+//         res.render("login", { message });
+//       }
+//     } else {
+//       res.render("login", { message });
+//     }
+//   } catch (error) {
+//     console.log("oh no");
+//     console.error(error);
+//   }
+// });
 
 
 app.get("/app", async function (req, res) {
