@@ -11,6 +11,15 @@ import { exec } from 'child_process';
 import bcrypt from "bcrypt";
 import passport from "passport";
 
+import initializePassport from "./passport-config";
+
+
+initializePassport(
+  passport,
+  email => users.find(user => user.email === email),
+  id => users.find(user => user.id === id)
+)
+
 // Function to start MongoDB server (mongod)
 function startMongoDBServer() {
   console.log('Starting MongoDB server...');
