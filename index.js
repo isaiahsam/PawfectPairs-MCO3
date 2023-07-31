@@ -9,6 +9,7 @@ import path from 'path';
 import { MongoClient } from "mongodb";
 import { exec } from 'child_process';
 import bcrypt from "bcrypt";
+import passport from "passport";
 
 // Function to start MongoDB server (mongod)
 function startMongoDBServer() {
