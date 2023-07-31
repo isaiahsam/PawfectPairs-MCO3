@@ -8,7 +8,7 @@ import { dirname, join } from 'path';
 import path from 'path';
 import { MongoClient } from "mongodb";
 import { exec } from 'child_process';
-
+import bcrypt from "bcrypt";
 
 // Function to start MongoDB server (mongod)
 function startMongoDBServer() {
@@ -122,9 +122,10 @@ app.post("/register", upload.single('petImage'), async (req, res) => {
   const user = await Profiles.findOne({ username: req.body.username });
   if (user === null) { //continue
     try {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const newProfile = new Profiles({
         username: req.body.username,
-        password: req.body.password,
+        password: hashedPassword,
         ownerName: req.body.ownerName,
         dogName: req.body.dogName,
         dogBreed: req.body.dogBreed,
