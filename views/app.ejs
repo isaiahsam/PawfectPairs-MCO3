@@ -1,0 +1,155 @@
+<%- include('partials/appheader'); -%>
+
+  <div id="loading-overlay">
+    <img id="loading-image" src="image/PawfectPairs Loading Screen.gif" alt="Loading">
+  </div>
+  <div class="navbar navbar-expand-md navbar-light">
+    <a class="logo-link" href="#">
+      <img class="mx-auto d-block img-logo" src="image\PawfectPairs_logo.png" alt="pawfectpairs-logo">
+      <h1 class="mt-3 logo navbar-brand"></h1>
+    </a>
+  </div>
+  <div class="container">
+    <ul class="nav nav-tabs mt-3">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#profile">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#chatting">Chat</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#swiping">Match</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div id="profile" class="tab-pane fade show active">
+        <div class="card mt-3">
+          <div class="card-header text-center">Your Dog</div>
+          <div class="card-body">
+            <div id="profile-container" class="container-fluid">
+              <div class="profile-info d-flex row">
+                <div class="col-md-6 col-sm-12 align-items-right">
+                  <img class="pfp" src=<%=petImage%> alt="profile-pic">
+                </div>
+                <div class="col-md-4">
+                  <div>
+                    <input type="text" id="dog-name" value=<%=dogName%> readonly>
+                  </div>
+                  <div>
+                    <label for="breed"><i class="fa-solid fa-dog" style="color: #545454;"></i></label>
+                    <input type="text" id="breed" value=<%=dogBreed%> readonly>
+                  </div>
+                  <div>
+                    <label for="owner-name"><i class="fa-solid fa-user" style="color: #545454;"></i></label>
+                    <input type="text" id="owner-name" value=<%=ownerName%> readonly>
+                  </div>
+                  <div>
+                    <label for="location"><i class="fa-solid fa-location-dot" style="color: #545454;"></i></label>
+                    <input type="text" id="location" value=<%=location%> readonly>
+                  </div>
+                  <div>
+                    <label for="about" class="about">About Me</label>
+                    <textarea id="about" name="about" rows="5" cols="20" readonly><%=about%></textarea>
+                  </div>
+                  <button id="edit-button">Edit</button>
+                  <button id="save-button" style="display: none;">Save</button> <!-- Added Save button  -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="chatting" class="tab-pane fade">
+        <div class="card mt-3">
+          <div class="card-header text-center">Messages</div>
+          <div class="card-body">
+            <div class="d-flex row">
+            <div class="chat-list col-md-3">
+              <!-- Sample Chat Conversation -->
+              <!--
+          <div class="chat-item">
+            <div class="chat-header">
+              <img src="avatar.png" alt="User Avatar" class="chat-avatar">
+              <div class="chat-info">
+                <h4 class="chat-name">John Doe</h4>
+                <p class="chat-timestamp">2 hours ago</p>
+              </div>
+            </div>
+            <div class="chat-message">
+              <p>Hey, how are you doing?</p>
+            </div>
+          </div>
+          -->
+              <!-- Add more chat conversations here -->
+            </div>
+            <div id="chat-container" class="chat-container col-md-9">
+              <div id="chat-view" class="chat-view">
+                <div id="chat-messages" class="chat-messages">
+                  <!-- Chat messages will be appended here -->
+                </div>
+              </div>
+              <div class="chat-input">
+                <input type="text" id="message-input" placeholder="Type your message...">
+                <button id="send-button">Send</button>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+
+      </div>
+      <div id="swiping" class="tab-pane fade">
+        <div class="card mt-3 swiping-container">
+          <div class="card-header text-center">SNUB OR WAG?</div>
+          <div class="card-body">
+            <div class="swipe-card" id="swipeCard">
+              <div class="d-flex row">
+              <div class="profile-info-swiping col-md-6">
+                <p class="card-text"><span id="swipeDogName"></span></p>
+                <p class="card-text"><i class="fa-solid fa-dog" style="color: #545454;"></i><span id="swipeBreed"></span></p>
+                <h5 class="card-title"></h5>
+                <p class="card-text"><i class="fa-solid fa-user" style="color: #545454;"></i><span id="swipeOwnerName"></span></p>
+                <p class="card-text"><i class="fa-solid fa-location-dot" style="color: #545454;"></i><span id="swipeLocation"></span></p>
+                <label for="about" class="about">About Me</label>
+                <p class="card-text"><span id="swipeAbout"></span></p>
+              </div>
+              <div class="col-md-6 align-items-right">
+              <img src="" alt="Dog Image" id="swipeDogImage" class="swipe-dog-image">
+            </div>
+          </div>
+              <div class="swipe-overlay swipe-left-btn">Snub</div>
+              <div class="swipe-overlay swipe-right-btn">Wag</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/appfooter'); -%>
+
+<!-- JavaScript code for handling the edit functionality -->
+<script>
+  document.getElementById('edit-button').addEventListener('click', function() {
+    // Enable editing for all input fields and the textarea
+    document.querySelectorAll('#profile-container input, #profile-container textarea').forEach(element => {
+      element.removeAttribute('readonly');
+    });
+
+    // Hide the Edit button and show the Save button
+    document.getElementById('edit-button').style.display = 'none';
+    document.getElementById('save-button').style.display = 'block';
+  });
+
+  document.getElementById('save-button').addEventListener('click', function() {
+    // Disable editing for all input fields and the textarea
+    document.querySelectorAll('#profile-container input, #profile-container textarea').forEach(element => {
+      element.setAttribute('readonly', 'true');
+    });
+
+    // Hide the Save button and show the Edit button
+    document.getElementById('edit-button').style.display = 'block';
+    document.getElementById('save-button').style.display = 'none';
+  });
+</script>

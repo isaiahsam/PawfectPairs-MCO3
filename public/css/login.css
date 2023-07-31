@@ -1,0 +1,54 @@
+@import url('https://fonts.cdnfonts.com/css/shining-monday');
+
+
+body {
+    height: 100vh;
+}
+
+a {
+    text-decoration-line: none;
+}
+
+.main-header {
+    font-family: 'Shining Monday', sans-serif;
+}
+
+.sub-font {
+    font-family: 'frankfurter-medium-plain', sans-serif;
+}
+
+
+.proj-bg-white {
+    background-color: #FBFBF3;
+}
+
+.proj-bg-white-dog-img {
+    background-image: url("images/white-bg.png");
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.proj-bg-yellow {
+    background-color: #FFC944;
+}
+
+.proj-bg-orange {
+    background-color: #EF723C;
+}
+
+.proj-text-orange {
+    color: #EF723C;
+}
+
+.container-logo {
+    height: 20vh;
+}
+
+.register {
+
+}
+
+.footer {
+    color: #FBFBF3;
+}

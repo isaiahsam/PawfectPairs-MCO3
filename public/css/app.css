@@ -1,0 +1,382 @@
+body {
+  background-image: url("image/body-bg.png");
+  background-size: cover;
+  font-family: 'Nunito', sans-serif;
+}
+
+.card-body {
+  background-color: #FBFBF3;
+}
+.navbar {
+  background-color: #fcc944;
+  width: 100%;
+}
+
+.img-logo {
+  height: 6rem;
+}
+
+.logo-link {
+  height: 6rem;
+  margin-left: 3rem;
+}
+
+@media (max-width: 768px) {
+  .logo-link {
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+.nav {
+  border: none;
+}
+
+.nav-item {
+  background-color: #fbfbf3;
+  margin: 1rem;
+}
+
+.nav-tabs .nav-link {
+  border-style: solid;
+  border-radius: 300px;
+  border-width: medium;
+  border-color: #fcc944;
+  color: #fcc944;
+  font-weight: bolder;
+}
+
+.nav-link:hover {
+  color: white;
+  background-color: #fcc944;
+  border-radius: 300px;
+}
+
+.nav-tabs .nav-link.active {
+  color: #FBFBF3;
+  background-color: #ef723c;
+  border-color: #ef723c;
+  border-radius: 300px;
+}
+
+.card-header {
+  background-color: #EF723C;
+  color: #FBFBF3;
+  font-family: 'Shining Monday', sans-serif;
+  font-size: 2.5rem;
+}
+
+.pfp {
+  border-radius: 3.5rem;
+  border-style: solid;
+  border-color: #ef723c;
+  background-color: white;
+  width: 100%;
+  height: auto;
+}
+
+#profile-container {
+  margin: 2rem 0;
+}
+
+.profile-info {
+  margin-top: 0px;
+  color: black;
+  margin-left: 5rem;
+  z-index: 2;
+}
+
+.profile-info input {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  max-width: 100%;
+  font-size: 19px;
+}
+
+.about {
+  color: #ff9d93;
+  font-size: 30px;
+  font-family: 'Frankfurter Medium', sans-serif;
+  font-weight: bold;
+}
+
+#about {
+  margin-bottom: 4rem;
+resize: none;
+border: none;
+overflow: hidden;
+background-color: transparent;
+outline: none;
+font-family: inherit;
+font-size: inherit;
+font-weight: inherit;
+color: inherit;
+width: 100%;
+}
+
+#dog-name {
+  color: #7780B4;
+  font-size: 61px;
+  font-family: 'Frankfurter Medium', sans-serif;
+  font-weight: bold;
+}
+
+#edit-button {
+  background-color: transparent;
+  border-color: #ef723c;
+  bottom: 10px;
+  color: #ef723c;
+  position: absolute;
+  outline: none;
+}
+
+#edit-button:focus {
+  background-color: transparent;
+  border-color: #ef723c;
+  bottom: 10px;
+  color: #ef723c;
+  position: absolute;
+  outline: none;
+}
+
+#chatting .card-body {
+  height: 35rem;
+}
+
+.chat-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.chat-item {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.chat-item:hover {
+  background-color: #e0e0e0;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+}
+
+.chat-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.chat-info {
+  flex: 1;
+}
+
+.chat-name {
+  margin: 0;
+}
+
+.chat-timestamp {
+  margin: 0;
+  font-size: 14px;
+  color: #888;
+}
+
+.chat-message {
+  margin-top: 5px;
+}
+
+.chat-container {
+  display: none;
+  padding: 20px;
+  padding-top: 0;
+}
+
+.chat-view {
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  height: 450px;
+  overflow-y: auto;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.chat-messages {
+  margin-bottom: 10px;
+}
+
+.chat-input {
+  display: flex;
+  align-items: center;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 5px;
+  margin-right: 10px;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
+
+.chat-input button {
+  padding: 5px 10px;
+  background-color: #5cb85c;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.chat-input button:hover {
+  background-color: #449d44;
+}
+
+.swiping-container {
+  border-radius: 5rem;
+}
+
+.swipe-card {
+  position: relative;
+  width: 90%;
+  min-width: 420px;
+  height: 500px;
+  background-color: #fcf4d9;
+  border-radius: 3rem;
+  border-width: 3px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  margin: 4rem auto;
+  transition: transform 0.3s ease;
+  box-shadow: -5px 0.5rem 1rem rgba(0, 0, 0, 0.2);
+}
+
+#swiping .card-body {
+  background-color: white;
+  background-size: cover;
+}
+
+.profile-info-swiping {
+  margin-top: 0px;
+  padding-left: 3rem;
+  color: black;
+  z-index: 0;
+}
+
+#swipeDogName {
+  color: #7780B4;
+  font-size: 50px;
+  font-family: 'Frankfurter Medium', sans-serif;
+  font-weight: bold;
+}
+
+#swipeBreed {
+  max-width: 100%;
+  font-size: 19px;
+}
+
+#swipeOwnerName {
+  max-width: 100%;
+  font-size: 19px;
+}
+
+#swipeLocation {
+  max-width: 100%;
+  font-size: 19px;
+}
+
+.swipe-card .fa-solid {
+  margin-right: 10px;
+}
+
+.swipe-left {
+  transform: translateX(-150%);
+  /* Slide out to the left */
+}
+
+.swipe-right {
+  transform: translateX(150%);
+  /* Slide out to the right */
+}
+
+.swipe-dog-image {
+  width: 100%;
+  height: 465px;
+  object-fit: cover;
+  border-style: solid;
+  border-color: #ef723c;
+  background-color: white;
+}
+
+.swipe-overlay {
+  position: absolute;
+  bottom: 10px;
+  width: 100px;
+  height: 50px;
+  padding: 10px;
+  font-size: 18px;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#swipeDogImage {
+  border-radius: 3.5rem;
+}
+
+.swipe-left-btn {
+  border-color: #ef723c;
+  border-width: medium;
+  border-style: solid;
+  border-radius: 3rem;
+  color: #ef723c;
+  left: 50px;
+  bottom: 3rem;
+}
+
+.swipe-left-btn:hover {
+  border-color: #ef723c;
+  background-color: #ef723c;
+  border-width: medium;
+  border-style: solid;
+  border-radius: 3rem;
+  color: #fbfbf3;
+  left: 50px;
+  bottom: 3rem;
+}
+
+.swipe-right-btn {
+  background-color: #27A86E;
+  border-radius: 3rem;
+  left: 160px;
+  bottom: 3rem;
+}
+
+.swipe-right-btn:hover {
+  border-color: #27A86E;
+  background-color: #fbfbf3;
+  border-width: medium;
+  border-style: solid;
+  border-radius: 3rem;
+  color: #27A86E;
+  left: 160px;
+  bottom: 3rem;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
