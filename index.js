@@ -10,6 +10,7 @@ import { MongoClient } from "mongodb";
 import { exec } from 'child_process';
 import bcrypt from "bcrypt";
 import passport from "passport";
+import session from "express-session";
 
 import initializePassport from "./passport-config";
 
@@ -106,6 +107,13 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(session({
+  secret: secret,
+  resave: false,
+  saveUninitialized: false
+}))
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.get('/getData', async (req, res) => {
   try {
