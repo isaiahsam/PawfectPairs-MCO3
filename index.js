@@ -125,6 +125,7 @@ const port = 3000;
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json())
 app.use(express.static("public"));
 app.use(session({
   secret: "yes",
@@ -135,6 +136,10 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 app.use(methodOverride('_method'))
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  next()
+})
 
 app.get('/getData', async (req, res) => {
   try {
@@ -146,6 +151,18 @@ app.get('/getData', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.get('/get/:dogName', async(req, res) => { // treated dogName as unique ID 
+  const dogName = req.params.dogName
+  try {
+    console.log(dogName)
+    const user = await Profiles.findOne({dogName: dogName}).select({})
+    res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
 
 app.get("/", checkNotAuthenticated, function (req, res) {
   const message = "";
@@ -221,6 +238,27 @@ app.get("/app", async function (req, res) {
     res.status(500).send("Internal Server Error");
   }
 });
+
+app.patch("/edit/:id", async (req, res) => {
+  const id = req.params.id
+  const data = req.body
+
+  if(!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({error: "this user does not exist"})
+  }
+
+  try {
+    const user = await Profiles.findOneAndUpdate({_id : id}, {
+       ...req.body
+    })
+    console.log(req.body)
+    console.log(id)
+    res.status(200).json(user)
+
+  } catch (err) {
+    res.status(404).json({error: err})
+  }
+})
 
 async function insertDummyProfileData() {
   const user = await Profiles.findOne({ username: "Cornars" });
