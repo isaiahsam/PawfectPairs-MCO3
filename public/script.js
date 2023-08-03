@@ -21,7 +21,6 @@ function processData(data) {
   // Assuming the fetched data is an array
   profiles = data;
   console.log(profiles); // Display the data to verify
-  console.log("whahahha");
   updateSwipeCard();
   // Now you can use the profiles array in your script for further processing or rendering
 }
@@ -178,6 +177,7 @@ const swipeAbout = $('#swipeAbout');
 
 function updateSwipeCard() {
   const profile = profiles[currentProfileIndex];
+  console.log(profile._id)
   swipeDogImage.attr('src', "/image/uploads/" + profile.petImage);
   swipeDogName.text(profile.dogName);
   swipeBreed.text(profile.dogBreed);
@@ -199,9 +199,38 @@ function swipeLeft() {
   }, 300);
 }
 
+// Add a function to wag the current profile
+function wagProfile(profileId) {
+  fetch(`/wagProfile/${profileId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({}),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to wag the profile');
+      }
+      return response.json();
+    })
+    .then((updatedProfile) => {
+      // Handle the success response (if needed)
+      console.log('Profile wagged successfully', updatedProfile);
+    })
+    .catch((error) => {
+      console.error('Error wagging the profile:', error);
+    });
+}
+
+// Modify the swipeRight function to call the wagProfile function with the current profile ID
 function swipeRight() {
   swipeCard.addClass('swipe-right'); // Add animation class
   setTimeout(function () {
+    // Assuming your profiles array contains an array of objects with `_id` property
+    const currentProfile = profiles[currentProfileIndex];
+    wagProfile(currentProfile._id);
+
     currentProfileIndex++;
     if (currentProfileIndex >= profiles.length) {
       currentProfileIndex = 0;
@@ -209,6 +238,17 @@ function swipeRight() {
     updateSwipeCard();
   }, 300);
 }
+
+// function swipeRight() {
+//   swipeCard.addClass('swipe-right'); // Add animation class
+//   setTimeout(function () {
+//     currentProfileIndex++;
+//     if (currentProfileIndex >= profiles.length) {
+//       currentProfileIndex = 0;
+//     }
+//     updateSwipeCard();
+//   }, 300);
+// }
 
 
 $('.swipe-left-btn').on('click', swipeLeft);

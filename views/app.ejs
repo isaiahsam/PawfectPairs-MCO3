@@ -69,9 +69,9 @@
           <div class="card-header text-center">Messages</div>
           <div class="card-body">
             <div class="d-flex row">
-            <div class="chat-list col-md-3">
-              <!-- Sample Chat Conversation -->
-              <!--
+              <div class="chat-list col-md-3">
+                <!-- Sample Chat Conversation -->
+                <!--
           <div class="chat-item">
             <div class="chat-header">
               <img src="avatar.png" alt="User Avatar" class="chat-avatar">
@@ -85,20 +85,20 @@
             </div>
           </div>
           -->
-              <!-- Add more chat conversations here -->
-            </div>
-            <div id="chat-container" class="chat-container col-md-9">
-              <div id="chat-view" class="chat-view">
-                <div id="chat-messages" class="chat-messages">
-                  <!-- Chat messages will be appended here -->
+                <!-- Add more chat conversations here -->
+              </div>
+              <div id="chat-container" class="chat-container col-md-9">
+                <div id="chat-view" class="chat-view">
+                  <div id="chat-messages" class="chat-messages">
+                    <!-- Chat messages will be appended here -->
+                  </div>
+                </div>
+                <div class="chat-input">
+                  <input type="text" id="message-input" placeholder="Type your message...">
+                  <button id="send-button">Send</button>
                 </div>
               </div>
-              <div class="chat-input">
-                <input type="text" id="message-input" placeholder="Type your message...">
-                <button id="send-button">Send</button>
-              </div>
             </div>
-          </div>
           </div>
         </div>
 
@@ -110,19 +110,22 @@
           <div class="card-body">
             <div class="swipe-card" id="swipeCard">
               <div class="d-flex row">
-              <div class="profile-info-swiping col-md-6">
-                <p class="card-text"><span id="swipeDogName"></span></p>
-                <p class="card-text"><i class="fa-solid fa-dog" style="color: #545454;"></i><span id="swipeBreed"></span></p>
-                <h5 class="card-title"></h5>
-                <p class="card-text"><i class="fa-solid fa-user" style="color: #545454;"></i><span id="swipeOwnerName"></span></p>
-                <p class="card-text"><i class="fa-solid fa-location-dot" style="color: #545454;"></i><span id="swipeLocation"></span></p>
-                <label for="about" class="about">About Me</label>
-                <p class="card-text"><span id="swipeAbout"></span></p>
+                <div class="profile-info-swiping col-md-6">
+                  <p class="card-text"><span id="swipeDogName"></span></p>
+                  <p class="card-text"><i class="fa-solid fa-dog" style="color: #545454;"></i><span
+                      id="swipeBreed"></span></p>
+                  <h5 class="card-title"></h5>
+                  <p class="card-text"><i class="fa-solid fa-user" style="color: #545454;"></i><span
+                      id="swipeOwnerName"></span></p>
+                  <p class="card-text"><i class="fa-solid fa-location-dot" style="color: #545454;"></i><span
+                      id="swipeLocation"></span></p>
+                  <label for="about" class="about">About Me</label>
+                  <p class="card-text"><span id="swipeAbout"></span></p>
+                </div>
+                <div class="col-md-6 align-items-right">
+                  <img src="" alt="Dog Image" id="swipeDogImage" class="swipe-dog-image">
+                </div>
               </div>
-              <div class="col-md-6 align-items-right">
-              <img src="" alt="Dog Image" id="swipeDogImage" class="swipe-dog-image">
-            </div>
-          </div>
               <div class="swipe-overlay swipe-left-btn">Snub</div>
               <div class="swipe-overlay swipe-right-btn">Wag</div>
             </div>
@@ -134,27 +137,27 @@
 
   <%- include('partials/appfooter'); -%>
 
-<!-- JavaScript code for handling the edit functionality -->
-<script>
-  document.getElementById('edit-button').addEventListener('click', function() {
-    // Enable editing for all input fields and the textarea
-    document.querySelectorAll('#profile-container input, #profile-container textarea').forEach(element => {
-      element.removeAttribute('readonly');
-    });
+    <!-- JavaScript code for handling the edit functionality -->
+    <script>
+      document.getElementById('edit-button').addEventListener('click', function () {
+        // Enable editing for all input fields and the textarea
+        document.querySelectorAll('#profile-container input, #profile-container textarea').forEach(element => {
+          element.removeAttribute('readonly');
+        });
 
-    // Hide the Edit button and show the Save button
-    document.getElementById('edit-button').style.display = 'none';
-    document.getElementById('save-button').style.display = 'block';
-  });
+        // Hide the Edit button and show the Save button
+        document.getElementById('edit-button').style.display = 'none';
+        document.getElementById('save-button').style.display = 'block';
+      });
 
-  document.getElementById('save-button').addEventListener('click', function() {
-    // Disable editing for all input fields and the textarea
-    document.querySelectorAll('#profile-container input, #profile-container textarea').forEach(element => {
-      element.setAttribute('readonly', 'true');
-    });
+      document.getElementById('save-button').addEventListener('click', function () {
+        // Disable editing for all input fields and the textarea
+        document.querySelectorAll('#profile-container input, #profile-container textarea').forEach(element => {
+          element.setAttribute('readonly', 'true');
+        });
 
-    // Hide the Save button and show the Edit button
-    document.getElementById('edit-button').style.display = 'block';
-    document.getElementById('save-button').style.display = 'none';
-  });
-</script>
+        // Hide the Save button and show the Edit button
+        document.getElementById('edit-button').style.display = 'block';
+        document.getElementById('save-button').style.display = 'none';
+      });
+    </script>
