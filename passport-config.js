@@ -9,7 +9,6 @@ export default function initialize(passport, getUserByUsername, getUserById) {
       }
       
       try {
-        console.log(user.get('password'), password)
         if (await bcrypt.compare(password, user.get('password'))) {
           return done(null, user)
         } else {
