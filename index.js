@@ -8,7 +8,32 @@ import { dirname, join } from 'path';
 import path from 'path';
 import { MongoClient } from "mongodb";
 import { exec } from 'child_process';
+import bcrypt from "bcrypt";
+import passport from "passport";
+import session from "express-session";
+import flash from "express-flash";
 
+import initializePassport from "./passport-config.js";
+
+initializePassport(
+  passport, 
+  email => Profiles.findOne({"username": email}),
+  id => Profiles.findOne({"_id": id})
+);
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+  res.redirect('/')
+}
+
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/app')
+  }
+  next()
+}
 
 // Function to start MongoDB server (mongod)
 function startMongoDBServer() {
@@ -87,6 +112,7 @@ const storage = multer.diskStorage({
   },
 });
 
+
 const upload = multer({ storage: storage });
 
 const app = express();
@@ -96,6 +122,14 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(session({
+  secret: "yes",
+  resave: false,
+  saveUninitialized: false
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(flash())
 
 app.get('/getData', async (req, res) => {
   try {
@@ -108,7 +142,7 @@ app.get('/getData', async (req, res) => {
   }
 });
 
-app.get("/", function (req, res) {
+app.get("/", checkNotAuthenticated, function (req, res) {
   const message = "";
   res.render("login", { message });
 });
@@ -122,9 +156,10 @@ app.post("/register", upload.single('petImage'), async (req, res) => {
   const user = await Profiles.findOne({ username: req.body.username });
   if (user === null) { //continue
     try {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const newProfile = new Profiles({
         username: req.body.username,
-        password: req.body.password,
+        password: hashedPassword,
         ownerName: req.body.ownerName,
         dogName: req.body.dogName,
         dogBreed: req.body.dogBreed,
@@ -145,34 +180,39 @@ app.post("/register", upload.single('petImage'), async (req, res) => {
 });
 
 // Handle Login
-let username = "";
-app.post("/login", async function (req, res) {
-  const message = "Wrong username or password, please try again.";
-  try {
-    // check if the user exists
-    const user = await Profiles.findOne({ username: req.body.username });
-    if (user) {
-      //check if password matches
-      const result = req.body.password === user.password;
-      if (result) {
-        username = req.body.username;
-        res.redirect("/app");
-      } else {
-        res.render("login", { message });
-      }
-    } else {
-      res.render("login", { message });
-    }
-  } catch (error) {
-    console.log("oh no");
-    console.error(error);
-  }
-});
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+  successRedirect: '/app',
+  failureRedirect: '/',
+  failureFlash: true
+}))
+// let username = "";
+// app.post("/login", async function (req, res) {
+//   const message = "Wrong username or password, please try again.";
+//   try {
+//     // check if the user exists
+//     const user = await Profiles.findOne({ username: req.body.username });
+//     if (user) {
+//       //check if password matches
+//       const result = req.body.password === user.password;
+//       if (result) {
+//         username = req.body.username;
+//         res.redirect("/app");
+//       } else {
+//         res.render("login", { message });
+//       }
+//     } else {
+//       res.render("login", { message });
+//     }
+//   } catch (error) {
+//     console.log("oh no");
+//     console.error(error);
+//   }
+// });
 
 
 app.get("/app", async function (req, res) {
   try {
-    const user = await Profiles.findOne({ username: username });
+    const user = await req.user
     const ownerName = user.ownerName;
     const dogName = user.dogName;
     const dogBreed = user.dogBreed;
