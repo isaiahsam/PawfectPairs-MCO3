@@ -12,7 +12,7 @@ import bcrypt from "bcrypt";
 import passport from "passport";
 import session from "express-session";
 import flash from "express-flash";
-
+import methodOverride from "method-override";
 import initializePassport from "./passport-config.js";
 
 initializePassport(
@@ -130,6 +130,7 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
+app.use(methodOverride('_method'))
 
 app.get('/getData', async (req, res) => {
   try {
@@ -176,7 +177,6 @@ app.post("/register", upload.single('petImage'), async (req, res) => {
     }
   }
   else res.render('failedR');
-
 });
 
 // Handle Login
@@ -185,29 +185,14 @@ app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
   failureRedirect: '/',
   failureFlash: true
 }))
-// let username = "";
-// app.post("/login", async function (req, res) {
-//   const message = "Wrong username or password, please try again.";
-//   try {
-//     // check if the user exists
-//     const user = await Profiles.findOne({ username: req.body.username });
-//     if (user) {
-//       //check if password matches
-//       const result = req.body.password === user.password;
-//       if (result) {
-//         username = req.body.username;
-//         res.redirect("/app");
-//       } else {
-//         res.render("login", { message });
-//       }
-//     } else {
-//       res.render("login", { message });
-//     }
-//   } catch (error) {
-//     console.log("oh no");
-//     console.error(error);
-//   }
-// });
+
+//Handle Logout
+app.delete('/logout', function(req, res, next) {
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
+});
 
 
 app.get("/app", async function (req, res) {
