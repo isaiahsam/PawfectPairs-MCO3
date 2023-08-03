@@ -16,9 +16,9 @@ import methodOverride from "method-override";
 import initializePassport from "./passport-config.js";
 
 initializePassport(
-  passport, 
-  email => Profiles.findOne({"username": email}),
-  id => Profiles.findOne({"_id": id})
+  passport,
+  email => Profiles.findOne({ "username": email }),
+  id => Profiles.findOne({ "_id": id })
 );
 
 function checkAuthenticated(req, res, next) {
@@ -87,6 +87,10 @@ const profileSchema = new mongoose.Schema({
   location: String,
   about: String,
   petImage: String,
+  waggedUsers: {
+    type: Array,
+    default: []
+  }
 })
 
 const Profiles = mongoose.model('Profiles', profileSchema);
@@ -187,8 +191,8 @@ app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
 }))
 
 //Handle Logout
-app.delete('/logout', function(req, res, next) {
-  req.logout(function(err) {
+app.delete('/logout', function (req, res, next) {
+  req.logout(function (err) {
     if (err) { return next(err); }
     res.redirect('/');
   });
