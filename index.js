@@ -11,11 +11,29 @@ import { exec } from 'child_process';
 import bcrypt from "bcrypt";
 import passport from "passport";
 import session from "express-session";
+import flash from "express-flash";
 
 import initializePassport from "./passport-config.js";
 
+initializePassport(
+  passport, 
+  email => Profiles.findOne({"username": email}),
+  id => Profiles.findOne({"_id": id})
+);
 
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+  res.redirect('/')
+}
 
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/app')
+  }
+  next()
+}
 
 // Function to start MongoDB server (mongod)
 function startMongoDBServer() {
@@ -94,12 +112,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// password stuff
-initializePassport(
-  passport,
-  username => Profiles.find(user => user.username === username),
-  _id => Profiles.find(user => user._id === _id)
-)
 
 const upload = multer({ storage: storage });
 
@@ -117,6 +129,7 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(flash())
 
 app.get('/getData', async (req, res) => {
   try {
@@ -167,9 +180,10 @@ app.post("/register", upload.single('petImage'), async (req, res) => {
 });
 
 // Handle Login
-app.post('/login', passport.authenticate('local', {
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
   successRedirect: '/app',
   failureRedirect: '/',
+  failureFlash: true
 }))
 // let username = "";
 // app.post("/login", async function (req, res) {
@@ -198,7 +212,7 @@ app.post('/login', passport.authenticate('local', {
 
 app.get("/app", async function (req, res) {
   try {
-    const user = await Profiles.findOne({ username: req.user.username });
+    const user = await req.user
     const ownerName = user.ownerName;
     const dogName = user.dogName;
     const dogBreed = user.dogBreed;
