@@ -6,7 +6,7 @@ import multer from "multer";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import path from 'path';
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { exec } from 'child_process';
 import bcrypt from "bcrypt";
 import passport from "passport";
@@ -87,7 +87,7 @@ const profileSchema = new mongoose.Schema({
   location: String,
   about: String,
   petImage: String,
-  waggedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+  waggedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Profiles' }]
 })
 
 const Profiles = mongoose.model('Profiles', profileSchema);
@@ -198,7 +198,7 @@ app.delete('/logout', function (req, res, next) {
 
 app.get("/app", async function (req, res) {
   try {
-    const user = await req.user
+    const user = await req.user;
     const ownerName = user.ownerName;
     const dogName = user.dogName;
     const dogBreed = user.dogBreed;
@@ -224,25 +224,16 @@ app.get("/app", async function (req, res) {
 app.post("/wagProfile/:profileId", async function (req, res) {
   try {
     const profileId = req.params.profileId;
-    const userId = req.user._id; // Assuming you have the authenticated user's ID in req.user._id
+    console.log(profileId)
     // You can also validate if the user is allowed to wag profiles here, if needed.
-
-    // Update the profile document to add the user ID to the waggedUsers array
-    const updatedProfile = await Profiles.findByIdAndUpdate(
-      profileId,
-      { $addToSet: { waggedUsers: userId } }, // $addToSet ensures no duplicate user IDs
-      { new: true }
-    );
-
-    // Respond with the updated profile (optional)
-    res.json(updatedProfile);
+    const user = await req.user
+    user.waggedUsers.push(profileId)
+    await user.save();
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
 });
-
-
 
 async function insertDummyProfileData() {
   const user = await Profiles.findOne({ username: "Cornars" });
@@ -251,7 +242,7 @@ async function insertDummyProfileData() {
       await Profiles.insertMany([
         {
           username: "Cornars",
-          password: "password",
+          password: await bcrypt.hash("123", 10),
           ownerName: "Luis",
           dogName: "Chammy",
           dogBreed: "Papillion",
@@ -261,7 +252,7 @@ async function insertDummyProfileData() {
         },
         {
           username: "Isaiah_Pasc",
-          password: "password",
+          password: await bcrypt.hash("123", 10),
           ownerName: "Sam",
           dogName: "Snow",
           dogBreed: "Border Collie",
@@ -271,7 +262,7 @@ async function insertDummyProfileData() {
         },
         {
           username: "James",
-          password: "password",
+          password: await bcrypt.hash("123", 10),
           ownerName: "David",
           dogName: "Chunky",
           dogBreed: "Pomeranian",
@@ -281,7 +272,7 @@ async function insertDummyProfileData() {
         },
         {
           username: "Mark",
-          password: "password",
+          password: await bcrypt.hash("123", 10),
           ownerName: "Jan",
           dogName: "Ching",
           dogBreed: "Chihuahua",
@@ -291,7 +282,7 @@ async function insertDummyProfileData() {
         },
         {
           username: "xabooty",
-          password: "password",
+          password: await bcrypt.hash("123", 10),
           ownerName: "Luis",
           dogName: "Shan",
           dogBreed: "Shih Tzu",
