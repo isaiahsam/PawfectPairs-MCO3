@@ -15,11 +15,7 @@ import session from "express-session";
 import initializePassport from "./passport-config.js";
 
 
-initializePassport(
-  passport,
-  email => users.find(user => user.email === email),
-  id => users.find(user => user.id === id)
-)
+
 
 // Function to start MongoDB server (mongod)
 function startMongoDBServer() {
@@ -97,6 +93,13 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + uniqueSuffix + ext);
   },
 });
+
+// password stuff
+initializePassport(
+  passport,
+  username => Profiles.find(user => user.username === username),
+  _id => Profiles.find(user => user._id === _id)
+)
 
 const upload = multer({ storage: storage });
 
@@ -195,7 +198,7 @@ app.post('/login', passport.authenticate('local', {
 
 app.get("/app", async function (req, res) {
   try {
-    const user = await Profiles.findOne({ username: username });
+    const user = await Profiles.findOne({ username: req.user.username });
     const ownerName = user.ownerName;
     const dogName = user.dogName;
     const dogBreed = user.dogBreed;
