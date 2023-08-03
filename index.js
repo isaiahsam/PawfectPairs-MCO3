@@ -142,7 +142,7 @@ app.get('/getData', async (req, res) => {
   }
 });
 
-app.get("/", function (req, res) {
+app.get("/", checkNotAuthenticated, function (req, res) {
   const message = "";
   res.render("login", { message });
 });
