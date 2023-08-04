@@ -230,7 +230,7 @@ app.post("/wagProfile/:profileId", async function (req, res) {
     const user = await req.user
     await Profiles.updateOne(
       { username: user.username },
-      { $push: { waggedUsers: profileId } }
+      { $addToSet: { waggedUsers: profileId } }
    )
   } catch (error) {
     console.error(error);
