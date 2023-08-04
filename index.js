@@ -14,6 +14,7 @@ import session from "express-session";
 import flash from "express-flash";
 import methodOverride from "method-override";
 import initializePassport from "./passport-config.js";
+import { type } from "os";
 
 initializePassport(
   passport,
@@ -223,12 +224,14 @@ app.get("/app", async function (req, res) {
 // Create an API route to add a user ID to the waggedUsers array
 app.post("/wagProfile/:profileId", async function (req, res) {
   try {
+
     const profileId = req.params.profileId;
-    console.log(profileId)
     // You can also validate if the user is allowed to wag profiles here, if needed.
     const user = await req.user
-    user.waggedUsers.push(profileId)
-    await user.save();
+    await Profiles.updateOne(
+      { username: user.username },
+      { $push: { waggedUsers: profileId } }
+   )
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
