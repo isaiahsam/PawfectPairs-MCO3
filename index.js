@@ -12,13 +12,13 @@ import bcrypt from "bcrypt";
 import passport from "passport";
 import session from "express-session";
 import flash from "express-flash";
-
+import methodOverride from "method-override";
 import initializePassport from "./passport-config.js";
 
 initializePassport(
-  passport, 
-  email => Profiles.findOne({"username": email}),
-  id => Profiles.findOne({"_id": id})
+  passport,
+  email => Profiles.findOne({ "username": email }),
+  id => Profiles.findOne({ "_id": id })
 );
 
 function checkAuthenticated(req, res, next) {
@@ -87,6 +87,10 @@ const profileSchema = new mongoose.Schema({
   location: String,
   about: String,
   petImage: String,
+  waggedUsers: {
+    type: Array,
+    default: []
+  }
 })
 
 const Profiles = mongoose.model('Profiles', profileSchema);
@@ -121,6 +125,7 @@ const port = 3000;
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json())
 app.use(express.static("public"));
 app.use(session({
   secret: "yes",
@@ -130,6 +135,11 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
+app.use(methodOverride('_method'))
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  next()
+})
 
 app.get('/getData', async (req, res) => {
   try {
@@ -141,6 +151,18 @@ app.get('/getData', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.get('/get/:dogName', async(req, res) => { // treated dogName as unique ID 
+  const dogName = req.params.dogName
+  try {
+    console.log(dogName)
+    const user = await Profiles.findOne({dogName: dogName}).select({})
+    res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
 
 app.get("/", checkNotAuthenticated, function (req, res) {
   const message = "";
@@ -176,7 +198,6 @@ app.post("/register", upload.single('petImage'), async (req, res) => {
     }
   }
   else res.render('failedR');
-
 });
 
 // Handle Login
@@ -185,29 +206,14 @@ app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
   failureRedirect: '/',
   failureFlash: true
 }))
-// let username = "";
-// app.post("/login", async function (req, res) {
-//   const message = "Wrong username or password, please try again.";
-//   try {
-//     // check if the user exists
-//     const user = await Profiles.findOne({ username: req.body.username });
-//     if (user) {
-//       //check if password matches
-//       const result = req.body.password === user.password;
-//       if (result) {
-//         username = req.body.username;
-//         res.redirect("/app");
-//       } else {
-//         res.render("login", { message });
-//       }
-//     } else {
-//       res.render("login", { message });
-//     }
-//   } catch (error) {
-//     console.log("oh no");
-//     console.error(error);
-//   }
-// });
+
+//Handle Logout
+app.delete('/logout', function (req, res, next) {
+  req.logout(function (err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
+});
 
 
 app.get("/app", async function (req, res) {
@@ -232,6 +238,27 @@ app.get("/app", async function (req, res) {
     res.status(500).send("Internal Server Error");
   }
 });
+
+app.patch("/edit/:id", async (req, res) => {
+  const id = req.params.id
+  const data = req.body
+
+  if(!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({error: "this user does not exist"})
+  }
+
+  try {
+    const user = await Profiles.findOneAndUpdate({_id : id}, {
+       ...req.body
+    })
+    console.log(req.body)
+    console.log(id)
+    res.status(200).json(user)
+
+  } catch (err) {
+    res.status(404).json({error: err})
+  }
+})
 
 async function insertDummyProfileData() {
   const user = await Profiles.findOne({ username: "Cornars" });
