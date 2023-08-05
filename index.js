@@ -239,6 +239,22 @@ app.get("/app", async function (req, res) {
   }
 });
 
+app.post("/wagProfile/:profileId", async function (req, res) {
+  try {
+
+    const profileId = req.params.profileId;
+    // You can also validate if the user is allowed to wag profiles here, if needed.
+    const user = await req.user
+    await Profiles.updateOne(
+      { username: user.username },
+      { $addToSet: { waggedUsers: profileId } }
+   )
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 app.patch("/edit/:id", async (req, res) => {
   const id = req.params.id
   const data = req.body
