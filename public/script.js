@@ -163,7 +163,7 @@ messageInput.keypress(function (event) {
 
 
 // Sample Profiles
-let profiles = fetchDataFromServer();;
+let profiles = fetchDataFromServer();
 
 let currentProfileIndex = 1;
 
@@ -191,10 +191,7 @@ function updateSwipeCard() {
 function swipeLeft() {
   swipeCard.addClass('swipe-left'); // Add animation class
   setTimeout(function () {
-    currentProfileIndex++;
-    if (currentProfileIndex >= profiles.length) {
-      currentProfileIndex = 0;
-    }
+    lookForUnwagged();
     updateSwipeCard();
   }, 300);
 }
@@ -217,12 +214,32 @@ function wagProfile(profileId) {
     .then((updatedProfile) => {
       // Handle the success response (if needed)
       console.log('Profile wagged successfully', updatedProfile);
+      profiles = fetchDataFromServer();
     })
     .catch((error) => {
       console.error('Error wagging the profile:', error);
     });
 }
 
+async function lookForUnwagged(){
+  try {
+  const waggedList = await fetch('/waggedList'); // Assumes your server is running on the same domain/port
+  if (!waggedList.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const list = await waggedList.json();
+  console.log("You wagged "+list);
+  currentProfileIndex++;
+  while(list.includes(profiles[currentProfileIndex]._id)){
+    currentProfileIndex++;
+    console.log("Moved to next profile");
+    //Add checker here if profile list exceeded already
+  }
+  // Call any function you need with the retrieved data
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
 // Modify the swipeRight function to call the wagProfile function with the current profile ID
 function swipeRight() {
   swipeCard.addClass('swipe-right'); // Add animation class
@@ -230,11 +247,9 @@ function swipeRight() {
     // Assuming your profiles array contains an array of objects with `_id` property
     const currentProfile = profiles[currentProfileIndex];
     wagProfile(currentProfile._id);
-
-    currentProfileIndex++;
-    if (currentProfileIndex >= profiles.length) {
-      currentProfileIndex = 0;
-    }
+    profiles = fetchDataFromServer();
+    // move to next unwagged profile
+    lookForUnwagged();
     updateSwipeCard();
   }, 300);
 }
