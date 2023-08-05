@@ -1,19 +1,37 @@
 import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import multer from "multer";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import path from 'path';
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { exec } from 'child_process';
 import bcrypt from "bcrypt";
 import passport from "passport";
 import session from "express-session";
 import flash from "express-flash";
 import methodOverride from "method-override";
+import dotenv from "dotenv";
+import { type } from "os";
+
+
 import initializePassport from "./passport-config.js";
+
+dotenv.config()
+
+//Database Port
+const mongoPort = process.env.MONGODB_URI;
+// const mongoPort = "mongodb://0.0.0.0:27017/Profiles";
+mongoose.connect(mongoPort, { useNewUrlParser: true });
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
+
 
 initializePassport(
   passport,
@@ -35,47 +53,38 @@ function checkNotAuthenticated(req, res, next) {
   next()
 }
 
-// Function to start MongoDB server (mongod)
-function startMongoDBServer() {
-  console.log('Starting MongoDB server...');
-  exec('mongod', (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error starting MongoDB server: ${error.message}`);
-    } else {
-      console.log(`MongoDB server running: ${stdout}`);
-    }
-  });
-}
+// // Function to start MongoDB server (mongod)
+// function startMongoDBServer() {
+//   console.log('Starting MongoDB server...');
+//   exec('mongod', (error, stdout, stderr) => {
+//     if (error) {
+//       console.error(`Error starting MongoDB server: ${error.message}`);
+//     } else {
+//       console.log(`MongoDB server running: ${stdout}`);
+//     }
+//   });
+// }
 
-// Function to start MongoDB shell (mongosh)
-function startMongoDBShell() {
-  console.log('Starting MongoDB shell...');
-  exec('mongosh', (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error starting MongoDB shell: ${error.message}`);
-    } else {
-      console.log(`MongoDB shell running: ${stdout}`);
-    }
-  });
-}
+// // Function to start MongoDB shell (mongosh)
+// function startMongoDBShell() {
+//   console.log('Starting MongoDB shell...');
+//   exec('mongosh', (error, stdout, stderr) => {
+//     if (error) {
+//       console.error(`Error starting MongoDB shell: ${error.message}`);
+//     } else {
+//       console.log(`MongoDB shell running: ${stdout}`);
+//     }
+//   });
+// }
 
 // Call the functions to start the server and shell
-startMongoDBServer();
-startMongoDBShell();
+// startMongoDBServer();
+// startMongoDBShell();
 
 // Get the directory name of the current module using import.meta
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-//Database Port
-const mongoPort = "mongodb://0.0.0.0:27017/Profiles";
-mongoose.connect(mongoPort, { useNewUrlParser: true });
-
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.once('open', () => {
-  console.log('Connected to MongoDB');
-});
 
 //Profile Schema
 const profileSchema = new mongoose.Schema({
@@ -87,21 +96,19 @@ const profileSchema = new mongoose.Schema({
   location: String,
   about: String,
   petImage: String,
-  waggedUsers: {
-    type: Array,
-    default: []
-  }
+  waggedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Profiles' }]
 })
 
 const Profiles = mongoose.model('Profiles', profileSchema);
 
-Profiles.find({})
-  .then(profiles => {
-    console.log('Query result:', profiles);
-  })
-  .catch(error => {
-    console.error('Error querying the database:', error);
-  });
+// This breaks the server
+// Profiles.find({})
+//   .then(profiles => {
+//     console.log('Query result:', profiles);
+//   })
+//   .catch(error => {
+//     console.error('Error querying the database:', error);
+//   });
 
 
 // Set up multer to handle file uploads
@@ -218,7 +225,7 @@ app.delete('/logout', function (req, res, next) {
 
 app.get("/app", async function (req, res) {
   try {
-    const user = await req.user
+    const user = await req.user;
     const ownerName = user.ownerName;
     const dogName = user.dogName;
     const dogBreed = user.dogBreed;
@@ -239,6 +246,8 @@ app.get("/app", async function (req, res) {
   }
 });
 
+
+// Create an API route to add a user ID to the waggedUsers array
 app.post("/wagProfile/:profileId", async function (req, res) {
   try {
 
@@ -255,27 +264,6 @@ app.post("/wagProfile/:profileId", async function (req, res) {
   }
 });
 
-app.patch("/edit/:id", async (req, res) => {
-  const id = req.params.id
-  const data = req.body
-
-  if(!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({error: "this user does not exist"})
-  }
-
-  try {
-    const user = await Profiles.findOneAndUpdate({_id : id}, {
-       ...req.body
-    })
-    console.log(req.body)
-    console.log(id)
-    res.status(200).json(user)
-
-  } catch (err) {
-    res.status(404).json({error: err})
-  }
-})
-
 async function insertDummyProfileData() {
   const user = await Profiles.findOne({ username: "Cornars" });
   if (user === null) { //continue
@@ -283,7 +271,7 @@ async function insertDummyProfileData() {
       await Profiles.insertMany([
         {
           username: "Cornars",
-          password: "password",
+          password: await bcrypt.hash("123", 10),
           ownerName: "Luis",
           dogName: "Chammy",
           dogBreed: "Papillion",
@@ -293,7 +281,7 @@ async function insertDummyProfileData() {
         },
         {
           username: "Isaiah_Pasc",
-          password: "password",
+          password: await bcrypt.hash("123", 10),
           ownerName: "Sam",
           dogName: "Snow",
           dogBreed: "Border Collie",
@@ -303,7 +291,7 @@ async function insertDummyProfileData() {
         },
         {
           username: "James",
-          password: "password",
+          password: await bcrypt.hash("123", 10),
           ownerName: "David",
           dogName: "Chunky",
           dogBreed: "Pomeranian",
@@ -313,7 +301,7 @@ async function insertDummyProfileData() {
         },
         {
           username: "Mark",
-          password: "password",
+          password: await bcrypt.hash("123", 10),
           ownerName: "Jan",
           dogName: "Ching",
           dogBreed: "Chihuahua",
@@ -323,7 +311,7 @@ async function insertDummyProfileData() {
         },
         {
           username: "xabooty",
-          password: "password",
+          password: await bcrypt.hash("123", 10),
           ownerName: "Luis",
           dogName: "Shan",
           dogBreed: "Shih Tzu",
@@ -337,7 +325,7 @@ async function insertDummyProfileData() {
     }
   }
 }
-insertDummyProfileData(); // CALL ONLY ONCE
+// insertDummyProfileData(); // CALL ONLY ONCE
 
 app.listen(port, () => {
   console.log('Server running on port ' + port + '.');
