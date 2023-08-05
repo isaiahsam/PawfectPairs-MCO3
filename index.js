@@ -23,7 +23,6 @@ dotenv.config()
 
 //Database Port
 const mongoPort = process.env.MONGODB_URI;
-console.log(mongoPort)
 // const mongoPort = "mongodb://0.0.0.0:27017/Profiles";
 mongoose.connect(mongoPort, { useNewUrlParser: true });
 
@@ -102,6 +101,7 @@ const profileSchema = new mongoose.Schema({
 
 const Profiles = mongoose.model('Profiles', profileSchema);
 
+// This breaks the server
 // Profiles.find({})
 //   .then(profiles => {
 //     console.log('Query result:', profiles);
