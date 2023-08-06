@@ -209,7 +209,7 @@ app.get('/waggedList', async (req,res) => {
 });
 
 
-app.get("/app", async function (req, res) {
+app.get("/app", checkAuthenticated, async function (req, res) {
   try {
     const user = await req.user;
     const ownerName = user.ownerName;
