@@ -1,0 +1,190 @@
+*{
+    font-family: Nunito;
+
+}
+
+body{
+    background: ffc994;
+    background-image: url('6.png');
+}
+
+.section-padding{
+    padding: 100px 0;
+}
+
+.carousel-item{
+    height: 100vh;
+    min-height: 300px;
+}
+
+.carousel-caption{
+    bottom: 220px;
+    z-index: 2;
+}
+
+.carousel-caption h5{
+    font-size: 90px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+    margin-top: 25px;
+
+}
+
+.carousel-caption p{
+    /* font-family: Frankfurter; */
+    width: 60%;
+    margin: auto;
+    font-size: 18px;
+    line-height: 1.9;
+}
+
+.btn{
+    font-family: Nunito;
+    font-size: 30px;
+}
+
+.carousel-inner::before{
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+#carouselExampleCaptions img {
+  width: 100%;
+}
+
+.navbar {
+  background-color: #fbfbf3;
+}
+
+.navbar-nav a{
+    font-size: 1.5rem;
+    color: #EF723C;
+    font-weight: lighter;
+    margin: auto 1rem;
+}
+
+.navbar-nav:hover {
+    color: #EF723C;
+}
+
+.nav-link:hover {
+    color: #b1b9e8;
+}
+
+.w-100{
+    height: 100vh;
+}
+
+#cta {
+    background-image: url(6.png);
+    text-align: center;
+  }
+
+  .beforetestimonial{
+    text-align: flex;
+    font-weight: bold;
+    margin: 100px 15% 40px;
+  }
+
+  .iphone-img {
+    width: 30%;
+    position: absolute;
+    top: 1200px;
+    /* right: 10%; */
+    z-index: 0;
+  }
+
+  .rotate-25 {
+    transform: rotate(25deg);
+  }
+
+.testimonial{
+    background-image: url(5.png);
+    z-index: 1;
+    position:relative;
+}
+
+.testimonial .card {
+  height: 21rem;
+  margin: 5rem;
+}
+
+  /* team section */
+
+  .members {
+    margin: auto;
+  }
+  .team .section-header .h2{
+    font-family: Shining Monday;
+  }
+  .team-member-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .team .card-body i{
+    font-size: 20px;
+  }
+
+  .team .card{
+    box-shadow: 15px 15px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .the-team{
+    font-weight: bold;
+    font-size: 65px;
+  }
+
+  .card-title{
+     font-family: 'Frankurter Medium Plain';
+  }
+
+
+/* responsiveness of the site */
+
+@media only screen and (min-width: 768px) and (max-width: 991px){
+    .carousel-caption{
+        bottom: 370px;
+    }
+
+    .card{
+        margin-bottom: 30px;
+        font-family: Nunito;
+    }
+
+    .img-area{
+        width: 100px;
+    }
+}
+
+@media only screen and (max-width: 767px){
+    .navbar-nav{
+        text-align: center;
+    }
+
+    .carousel-caption{
+        bottom: 125px;
+    }
+
+    .carousel-caption h5{
+        font-size: 17px;
+    }
+
+    .carousel-caption a{
+        padding: 10px 15px;
+    }
+
+    .carousel-caption p{
+        width: 100px;
+        line-height: 1.6;
+        font-size: 12px;
+    }
+}
