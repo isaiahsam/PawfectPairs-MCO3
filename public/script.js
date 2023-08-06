@@ -180,7 +180,6 @@ function sendMessage() {
       });
   }
 }
-
 // Populate chat list
 chats.forEach(function (chat, index) {
   const chatItem = $('<div class="chat-item"></div>');
