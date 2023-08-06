@@ -53,33 +53,6 @@ function checkNotAuthenticated(req, res, next) {
   next()
 }
 
-// // Function to start MongoDB server (mongod)
-// function startMongoDBServer() {
-//   console.log('Starting MongoDB server...');
-//   exec('mongod', (error, stdout, stderr) => {
-//     if (error) {
-//       console.error(`Error starting MongoDB server: ${error.message}`);
-//     } else {
-//       console.log(`MongoDB server running: ${stdout}`);
-//     }
-//   });
-// }
-
-// // Function to start MongoDB shell (mongosh)
-// function startMongoDBShell() {
-//   console.log('Starting MongoDB shell...');
-//   exec('mongosh', (error, stdout, stderr) => {
-//     if (error) {
-//       console.error(`Error starting MongoDB shell: ${error.message}`);
-//     } else {
-//       console.log(`MongoDB shell running: ${stdout}`);
-//     }
-//   });
-// }
-
-// Call the functions to start the server and shell
-// startMongoDBServer();
-// startMongoDBShell();
 
 // Get the directory name of the current module using import.meta
 const __filename = fileURLToPath(import.meta.url);
@@ -101,15 +74,16 @@ const profileSchema = new mongoose.Schema({
 
 const Profiles = mongoose.model('Profiles', profileSchema);
 
-// This breaks the server
-// Profiles.find({})
-//   .then(profiles => {
-//     console.log('Query result:', profiles);
-//   })
-//   .catch(error => {
-//     console.error('Error querying the database:', error);
-//   });
 
+//Chat Message Schema
+const chatMessageSchema = new mongoose.Schema({
+  sender: { type: mongoose.Schema.Types.ObjectId, ref: 'Profiles' },
+  receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'Profiles' },
+  message: String,
+  timestamp: { type: Date, default: Date.now }
+});
+
+const ChatMessage = mongoose.model('ChatMessage', chatMessageSchema);
 
 // Set up multer to handle file uploads
 const storage = multer.diskStorage({
@@ -284,6 +258,57 @@ app.patch("/edit/:id", async (req, res) => {
     res.status(404).json({error: err})
   }
 })
+
+//Chat Message Functionality
+
+// route for sending chat message
+app.post("/sendMessage/:receiverId", async function (req, res) {
+  try {
+    // const senderId = req.user._id;
+    // const receiverId = req.params.receiverId;
+    // const message = req.body.message;
+
+    const { sender, receiver, message } = await req.body;
+
+    console.log('Data to be inserted:', { sender, receiver, message });
+
+    // Save the chat message to the database
+    const chatMessage = new ChatMessage({
+      // sender: senderId, // profileId / senderId
+      // receiver: recieverId, // recieverId
+      sender: '64cdc51cae9378ccd7ffc208',
+      receiver: '64cdc51cae9378ccd7ffc208',
+      message: message
+    });
+    await chatMessage.save();
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+//route for getting chat messages
+app.get("/getMessages/:receiverId", async function (req, res) {
+  try {
+    const senderId = req.user._id;
+    const receiverId = req.params.receiverId;
+
+    // Retrieve chat messages between the two users
+    const messages = await ChatMessage.find({
+      $or: [
+        { sender: senderId, receiver: receiverId },
+        { sender: receiverId, receiver: senderId }
+      ]
+    }).sort({ timestamp: 1 });
+
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 async function insertDummyProfileData() {
   const user = await Profiles.findOne({ username: "Cornars" });

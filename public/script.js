@@ -108,14 +108,45 @@ function displayChatMessages(messages) {
 }
 
 // Function to open a chat conversation
+// function openChat(index) {
+//   const chat = chats[index];
+//   chatContainer.show();
+//   chatView.show();
+//   displayChatMessages(chat.messages);
+// }
+
 function openChat(index) {
   const chat = chats[index];
   chatContainer.show();
   chatView.show();
-  displayChatMessages(chat.messages);
+  chatMessages.empty(); // Clear existing messages
+  fetch(`/getMessages/${chat._id}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to get messages');
+      }
+      return response.json();
+    })
+    .then((messages) => {
+      // Display chat messages
+      displayChatMessages(messages);
+    })
+    .catch((error) => {
+      console.error('Error getting messages:', error);
+    });
 }
 
 // Function to handle sending a message
+// function sendMessage() {
+//   const message = messageInput.val();
+//   if (message.trim() !== '') {
+//     const chatMessage = $('<div class="chat-message"></div>');
+//     chatMessage.text(message);
+//     chatMessages.append(chatMessage);
+//     messageInput.val('');
+//   }
+// }
+
 function sendMessage() {
   const message = messageInput.val();
   if (message.trim() !== '') {
@@ -123,6 +154,29 @@ function sendMessage() {
     chatMessage.text(message);
     chatMessages.append(chatMessage);
     messageInput.val('');
+
+    // Send the message to the server
+    const currentProfile = profiles[currentProfileIndex];
+    fetch(`/sendMessage/${currentProfile._id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message: message }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to send message');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Handle the success response (if needed)
+        console.log('Message sent successfully');
+      })
+      .catch((error) => {
+        console.error('Error sending message:', error);
+      });
   }
 }
 
@@ -238,18 +292,6 @@ function swipeRight() {
     updateSwipeCard();
   }, 300);
 }
-
-// function swipeRight() {
-//   swipeCard.addClass('swipe-right'); // Add animation class
-//   setTimeout(function () {
-//     currentProfileIndex++;
-//     if (currentProfileIndex >= profiles.length) {
-//       currentProfileIndex = 0;
-//     }
-//     updateSwipeCard();
-//   }, 300);
-// }
-
 
 $('.swipe-left-btn').on('click', swipeLeft);
 $('.swipe-right-btn').on('click', swipeRight);
