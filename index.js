@@ -232,6 +232,10 @@ app.get("/app", checkAuthenticated, async function (req, res) {
   }
 });
 
+app.get("/landingPage", async function(req, res) => {
+  res.render("landing");
+});
+
 
 // Create an API route to add a user ID to the waggedUsers array
 app.post("/wagProfile/:profileId", async function (req, res) {
