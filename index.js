@@ -129,6 +129,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
+
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
@@ -196,6 +197,17 @@ app.delete('/logout', function (req, res, next) {
   });
 });
 
+app.get('/waggedList', async (req,res) => {
+  try {
+    const user = await req.user;
+    const wagged = user.waggedUsers;
+    res.json(wagged);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 app.get("/app", async function (req, res) {
   try {
@@ -227,7 +239,7 @@ app.post("/wagProfile/:profileId", async function (req, res) {
 
     const profileId = req.params.profileId;
     // You can also validate if the user is allowed to wag profiles here, if needed.
-    const user = await req.user
+    const user = await req.user;
     await Profiles.updateOne(
       { username: user.username },
       { $addToSet: { waggedUsers: profileId } }
