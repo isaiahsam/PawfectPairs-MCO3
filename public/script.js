@@ -157,6 +157,7 @@ function sendMessage() {
 
     // Send the message to the server
     const currentProfile = profiles[currentProfileIndex];
+    currentProfile._id
     fetch(`/sendMessage/${currentProfile._id}`, {
       method: 'POST',
       headers: {

@@ -268,16 +268,18 @@ app.post("/sendMessage/:receiverId", async function (req, res) {
     // const receiverId = req.params.receiverId;
     // const message = req.body.message;
 
-    const { sender, receiver, message } = await req.body;
-
-    console.log('Data to be inserted:', { sender, receiver, message });
+    const { test, receiver, message } = await req.body;
+    const sender = await req.user
+    const senderId = sender._id
+    const receiverId = req.params.receiverId;
+    console.log('Data to be inserted:', { senderId, receiverId, message });
 
     // Save the chat message to the database
     const chatMessage = new ChatMessage({
       // sender: senderId, // profileId / senderId
       // receiver: recieverId, // recieverId
-      sender: '64cdc51cae9378ccd7ffc208',
-      receiver: '64cdc51cae9378ccd7ffc208',
+      sender: senderId,
+      receiver: receiverId,
       message: message
     });
     await chatMessage.save();
