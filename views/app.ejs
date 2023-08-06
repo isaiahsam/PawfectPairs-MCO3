@@ -38,24 +38,25 @@
                 </div>
                 <div class="col-md-4">
                   <div>
-                    <input type="text" id="dog-name" value=<%=dogName%> readonly>
+                    <input type="text" id="dog-name" value="<%=dogName%>" readonly>
                   </div>
                   <div>
                     <label for="breed"><i class="fa-solid fa-dog" style="color: #545454;"></i></label>
-                    <input type="text" id="breed" value=<%=dogBreed%> readonly>
+                    <input type="text" id="breed" value="<%=dogBreed%>" readonly>
                   </div>
                   <div>
                     <label for="owner-name"><i class="fa-solid fa-user" style="color: #545454;"></i></label>
-                    <input type="text" id="owner-name" value=<%=ownerName%> readonly>
+                    <input type="text" id="owner-name" value="<%=ownerName%>" readonly>
                   </div>
                   <div>
                     <label for="location"><i class="fa-solid fa-location-dot" style="color: #545454;"></i></label>
-                    <input type="text" id="location" value=<%=location%> readonly>
+                    <input type="text" id="location" value="<%=location%>" readonly>
                   </div>
                   <div>
                     <label for="about" class="about">About Me</label>
                     <textarea id="about" name="about" rows="5" cols="20" readonly><%=about%></textarea>
                   </div>
+                  
                   <button id="edit-button">Edit</button>
                   <button id="save-button" style="display: none;">Save</button> <!-- Added Save button  -->
                 </div>
@@ -71,23 +72,9 @@
             <div class="d-flex row">
               <div class="chat-list col-md-3">
                 <!-- Sample Chat Conversation -->
-                <!--
-          <div class="chat-item">
-            <div class="chat-header">
-              <img src="avatar.png" alt="User Avatar" class="chat-avatar">
-              <div class="chat-info">
-                <h4 class="chat-name">John Doe</h4>
-                <p class="chat-timestamp">2 hours ago</p>
-              </div>
-            </div>
-            <div class="chat-message">
-              <p>Hey, how are you doing?</p>
-            </div>
-          </div>
-          -->
                 <!-- Add more chat conversations here -->
               </div>
-              <div id="chat-container" class="chat-container col-md-9">
+              <div id="chat-container" class="chat-container col-md-9" style="display: none;">
                 <div id="chat-view" class="chat-view">
                   <div id="chat-messages" class="chat-messages">
                     <!-- Chat messages will be appended here -->
@@ -101,8 +88,6 @@
             </div>
           </div>
         </div>
-
-
       </div>
       <div id="swiping" class="tab-pane fade">
         <div class="card mt-3 swiping-container">
@@ -150,11 +135,52 @@
         document.getElementById('save-button').style.display = 'block';
       });
 
-      document.getElementById('save-button').addEventListener('click', function () {
-        // Disable editing for all input fields and the textarea
-        document.querySelectorAll('#profile-container input, #profile-container textarea').forEach(element => {
-          element.setAttribute('readonly', 'true');
-        });
+  document.getElementById('save-button').addEventListener('click', function() {
+    // Disable editing for all input fields and the textarea
+    const dogName = document.getElementById('dog-name').value
+    const aboutValue = document.getElementById('about').value
+    const breedValue = document.getElementById('breed').value
+    const ownerNameValue = document.getElementById('owner-name').value
+    const locationValue = document.getElementById('location').value
+
+
+    let users;
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/get/" + dogName);
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const json = await res.json();
+        if(res.ok) {
+          users = json
+          changeData(users._id, aboutValue, breedValue, ownerNameValue, locationValue)
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+
+    const changeData = async (id, aboutValue, breedValue, ownerNameValue, locationValue) => {
+      const data = {about: aboutValue, dogBreed: breedValue, ownerName: ownerNameValue, location: locationValue}
+      try {
+        const res = await fetch("/edit/" + users._id, {
+          method: "PATCH",
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        const json = await res.json()
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    console.log(users)
+    document.querySelectorAll('#profile-container input, #profile-container textarea').forEach(element => {
+      element.setAttribute('readonly', 'true');
+    });
 
         // Hide the Save button and show the Edit button
         document.getElementById('edit-button').style.display = 'block';
