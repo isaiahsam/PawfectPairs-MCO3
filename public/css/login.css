@@ -45,6 +45,11 @@ a {
     height: 20vh;
 }
 
+.btn {
+    width: 100%;
+    margin-bottom: 2px;
+}
+
 .register {
 
 }
