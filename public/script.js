@@ -266,6 +266,17 @@ function wagProfile(profileId) {
       return response.json();
     })
     .then((updatedProfile) => {
+
+      //create a chat 
+      const newChat = {
+        _id: 'chat_' + index, // Replace this with the actual chat ID returned from the server
+        avatar: profile.avatar,
+        name: profile.name,
+      };
+      chats.push(newChat); // Add the new chat to the chats array
+      createChatButton(newChat, chats.length - 1); // Create a chat button for the new profile
+
+
       // Handle the success response (if needed)
       console.log('Profile wagged successfully', updatedProfile);
       profiles = fetchDataFromServer();
@@ -306,6 +317,31 @@ function swipeRight() {
     lookForUnwagged();
     updateSwipeCard();
   }, 300);
+}
+
+//createChat
+
+// Function to create a chat button for a profile
+function createChatButton(chat, index) {
+  const chatItem = $('<div class="chat-item"></div>');
+  const chatHeader = $('<div class="chat-header"></div>');
+  const chatAvatar = $('<img src="' + chat.avatar + '" alt="User Avatar" class="chat-avatar">');
+  const chatInfo = $('<div class="chat-info"></div>');
+  const chatName = $('<h4 class="chat-name">' + chat.name + '</h4>');
+  const chatTimestamp = $('<p class="chat-timestamp">Just now</p>'); // Assuming the chat button represents a new chat
+
+  chatHeader.append(chatAvatar);
+  chatInfo.append(chatName);
+  chatInfo.append(chatTimestamp);
+  chatHeader.append(chatInfo);
+  chatItem.append(chatHeader);
+
+  // Add event listener to the chat button to open the chat conversation
+  chatItem.click(function () {
+    openChat(index);
+  });
+
+  chatList.append(chatItem);
 }
 
 $('.swipe-left-btn').on('click', swipeLeft);
