@@ -2,29 +2,33 @@
 
         <div class="container-fluid d-flex justify-content-center align-items-start flex-wrap"
             style="gap: 10vh; padding-top: 20vh;">
-
-            <img src="image/transparent/9 (1).png" alt="" class="img-fluid h-50">
-
-            <form action="/login" method="post" class="proj-bg-white mr-4 mb-4 shadow p-3 mb-5 rounded w-25 flex-grow-*">
-                <p><%=message%></p>
-                    <div class="form-group">
-                        <input type="text" class="form-control mb-2" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            placeholder="Email" name="username">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" class="form-control" id="examplePasswordInput" aria-describedby="password"
-                            placeholder="Password" name="password">
-                    </div>
-                    <div class="button-div d-flex justify-content-center flex-wrap gap-2 " style="margin-top: 9px;">
-                        <button type="submit" class="btn btn-success mr-2 sign-in">Sign in</button>
-                    </div>
-                    <% if (messages.error) { %>
-                        <%= messages.error %>
-                      <% } %>
+            <form method="get" action="/landingPage">
+            <!-- <img src="image/transparent/9 (1).png" alt="" class="img-fluid h-50"> -->
+                <input type="Image" src="image/transparent/9 (1).png" alt="" class="img-fluid h-50">
             </form>
-            <a class="register" href="register">
-                <button class="btn btn-outline-primary">Sign up</button>
-            </a>
+            <div class="proj-bg-white mr-4 mb-4 shadow p-3 mb-5 rounded w-25 flex-grow-*">
+                <form action="/login" method="post">
+                    <p><%=message%></p>
+                        <div class="form-group">
+                            <input type="text" class="form-control mb-2" id="exampleInputEmail1" aria-describedby="emailHelp"
+                                placeholder="Email" name="username">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="examplePasswordInput" aria-describedby="password"
+                                placeholder="Password" name="password">
+                        </div>
+                        <div class="button-div d-flex justify-content-center flex-wrap gap-2 " style="margin-top: 9px;">
+                            <button type="submit" class="btn btn-success mr-2 sign-in">Sign in</button>
+                        </div>
+                        <% if (messages.error) { %>
+                            <%= messages.error %>
+                          <% } %>
+                </form>
+                <a class="register" href="register">
+                    <button href= "register" class="btn btn-outline-primary">Sign up</button>
+                </a>
+            </div>
+            
         </div>
 
     <%- include('partials/loginfooter'); -%>
