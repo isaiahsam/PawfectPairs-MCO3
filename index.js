@@ -232,7 +232,7 @@ app.get("/app", checkAuthenticated, async function (req, res) {
   }
 });
 
-app.get("/landingPage", async function(req, res) => {
+app.get("/landingPage", async function(req, res) {
   res.render("landing");
 });
 
