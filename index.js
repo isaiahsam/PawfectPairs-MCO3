@@ -155,6 +155,10 @@ app.get("/register", function (req, res) {
   res.render("register");
 })
 
+app.get('/about', function(req, res) {
+  res.render('about'); // Renders the about.ejs file
+});
+
 // Handle Registration
 app.post("/register", upload.single('petImage'), async (req, res) => {
   const user = await Profiles.findOne({ username: req.body.username });
